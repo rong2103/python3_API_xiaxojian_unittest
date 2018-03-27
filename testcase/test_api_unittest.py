@@ -1,8 +1,8 @@
 import unittest
-from common import dirconfig_zhourong
-from common.log_zhourong import Log
-from common.myexcel_zhourong import MyExcel
-from common.myrequests_zhourong import MyRequests
+from common import dirconfig
+from common.log import Log
+from common.myexcel import MyExcel
+from common.myrequests import MyRequests
 from common.transformresponse_zhourong import TransformResponse
 import ddt
 import time
@@ -10,9 +10,9 @@ import re
 
 #new logger
 now = time.strftime('%Y-%m-%d_%H_%M_%S')
-logger = Log("zhourong", dirconfig_zhourong.logger_dir + "/log" + now + ".txt")
+logger = Log("zhourong", dirconfig.logger_dir + "/log" + now + ".txt")
 #从testdata文件中读取测试用例作为测试用例的传入参数
-filename = dirconfig_zhourong.testcase_dir + "/api.xlsx"
+filename = dirconfig.testcase_dir + "/api.xlsx"
 sheetname1 = "Sheet1"
 sheetname2 = "variables"
 fileobj = MyExcel(filename,logger)

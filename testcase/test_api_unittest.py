@@ -3,7 +3,6 @@ from common import dirconfig
 from common.log import Log
 from common.myexcel import MyExcel
 from common.myrequests import MyRequests
-from common.transformresponse_zhourong import TransformResponse
 import ddt
 import time
 import re
@@ -60,6 +59,9 @@ class TestAPI(unittest.TestCase):
                 if testdata["request_data"].find(key)!= -1:
                      logger.info("请求中包含key")
                      testdata["request_data"] = testdata["request_data"].replace(key, str(value))
+                if testdata["related_expression"].find(key)!= -1:
+                     logger.info("related_expression中包含key")
+                     testdata["related_expression"] = testdata["related_expression"].replace(key, str(value))
         res = request.myrequest(testdata["url"], testdata["http_method"],testdata["request_data"])
         logger.info("返回的响应数据为：{0}".format(res.text))
         logger.info("期望结果为为：{0}".format(testdata["expected_data"]))
@@ -69,23 +71,12 @@ class TestAPI(unittest.TestCase):
         else:
             # testdata["related_expression"] is not None:
             logger.info("需要做响应提取")
-            # # print("is not none")
-            # # 调用响应数据提取的函数，提取需要的变量的值并写入excel的变量sheetname中,保存
-            # #new TransformResponse
-            # trans = TransformResponse(res.text, testdata["related_expression"], logger)
-            # vari_dict = trans.transform()
-            # #vari_dict == {'${userid}': 2146}
-            # logger.info("动态提取的变量字典vari_dict为：{0}".format(vari_dict))
-            # #update动态变量字典
-            # dynamic_varis_dict.update(vari_dict)
-            # logger.info("动态提取的所有变量字典dynamic_varis_dict为：{0}".format(dynamic_varis_dict))
-            # #################################################################################################
-            # # #如何替换呢
-            # # 再接下来的用例数据中继续判断测试请求中是否包含动态变量的key；如果包含则替换；
-            # ##########  要在请求之前替换
+            #${loanid}=.*"id":(\d*)[^\S]?"memberId":"${userid}"
             temp = testdata["related_expression"].split("=")
             # .*"id":(\d*).*
             #['2211']
+            logger.info("提取变量名为{0}".format(temp[0]))
+            logger.info("提取变量值为{0}".format(temp[1]))
             res_id = re.findall(temp[1],res.text)[0]
             logger.info("res_id".format(res_id))
             #{"$user_id":"2211"}
